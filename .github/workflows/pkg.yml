@@ -56,24 +56,24 @@ jobs:
           #- 'debian:bullseye' # debian/11
           #- 'centos:7'
           #- 'rockylinux:8'    # compatible with EOL centos:8
-        include:
-          # For CentOS 7 we want to statically link with OpenSSL, but `cargo generate-rpm` doesn't build the code for
-          # unlike `cargo deb` so we have to control the feature set used for building ourselves rather than in
-          # `Cargo.toml`.
-          - image: 'centos:7'
-            extra_build_args: '--features static-openssl'
+        # include:
+        #   # For CentOS 7 we want to statically link with OpenSSL, but `cargo generate-rpm` doesn't build the code for
+        #   # unlike `cargo deb` so we have to control the feature set used for building ourselves rather than in
+        #   # `Cargo.toml`.
+        #   - image: 'centos:7'
+        #     extra_build_args: '--features static-openssl'
 
-          # CentOS 8 became EOL and is in theory still usable as a build container as there is still a Docker image
-          # available, and package installation can be done by switching the yum config in the container to use packages
-          # from the CentOS 8 vault rather than the now offline actual CentOS 8 repository. However, due to experiencing
-          # lots of timed out connections to the vault we will build the CentOS 8 compatible package in a Rocky Linux
-          # container instead, as Rocky Linux is 100% compatible with CentOS 8. The server at packages.nlnetlabs.nl
-          # however has a repo for CentOS 8, not Rocky Linux, and determines the repo to publish in based on the name of
-          # the archive that we produce below which is in turn based by default on the container image used to build. We
-          # therefore in this case need to specify that the O/S we are building for has a different name than the Docker
-          # image we are building it in.
-          - image: 'rockylinux:8'
-            os: 'centos:8'
+        #   # CentOS 8 became EOL and is in theory still usable as a build container as there is still a Docker image
+        #   # available, and package installation can be done by switching the yum config in the container to use packages
+        #   # from the CentOS 8 vault rather than the now offline actual CentOS 8 repository. However, due to experiencing
+        #   # lots of timed out connections to the vault we will build the CentOS 8 compatible package in a Rocky Linux
+        #   # container instead, as Rocky Linux is 100% compatible with CentOS 8. The server at packages.nlnetlabs.nl
+        #   # however has a repo for CentOS 8, not Rocky Linux, and determines the repo to publish in based on the name of
+        #   # the archive that we produce below which is in turn based by default on the container image used to build. We
+        #   # therefore in this case need to specify that the O/S we are building for has a different name than the Docker
+        #   # image we are building it in.
+        #   - image: 'rockylinux:8'
+        #     os: 'centos:8'
     env:
       CARGO_DEB_VER: 1.34.2
       CARGO_GENERATE_RPM_VER: 0.6.0
@@ -364,7 +364,7 @@ jobs:
           #- 'centos:8'
         mode:
           - 'fresh-install'
-          - 'upgrade-from-published'
+          # - 'upgrade-from-published'
         # if we later add a new O/S or variant we won't have yet ever published
         # the package so can't do a test upgrade over last published version. In
         # that case add lines here like so to disable the upgrade from published
@@ -375,38 +375,38 @@ jobs:
         # exclude:
         #   - image: 'debian:bullseye'
         #     mode: 'upgrade-from-published'
-        exclude:
-          - pkg: 'krill'
-            mode: 'upgrade-from-published'
-            image: 'ubuntu:jammy'    # ubuntu/22.04
+        # exclude:
+        #   - pkg: 'krill'
+        #     mode: 'upgrade-from-published'
+        #     image: 'ubuntu:jammy'    # ubuntu/22.04
 
-          - pkg: 'krillup'
-            mode: 'upgrade-from-published'
-            image: 'ubuntu:xenial'   # ubuntu/16.04
-          - pkg: 'krillup'
-            mode: 'upgrade-from-published'
-            image: 'ubuntu:bionic'   # ubuntu/18.04
-          - pkg: 'krillup'
-            mode: 'upgrade-from-published'
-            image: 'ubuntu:focal'    # ubuntu/20.04
-          - pkg: 'krillup'
-            mode: 'upgrade-from-published'
-            image: 'ubuntu:jammy'    # ubuntu/22.04
-          - pkg: 'krillup'
-            mode: 'upgrade-from-published'
-            image: 'debian:stretch'  # debian/9
-          - pkg: 'krillup'
-            mode: 'upgrade-from-published'
-            image: 'debian:buster'   # debian/10
-          - pkg: 'krillup'
-            mode: 'upgrade-from-published'
-            image: 'debian:bullseye' # debian/11
-          - pkg: 'krillup'
-            mode: 'upgrade-from-published'
-            image: 'centos:7'
-          - pkg: 'krillup'
-            mode: 'upgrade-from-published'
-            image: 'centos:8'
+        #   - pkg: 'krillup'
+        #     mode: 'upgrade-from-published'
+        #     image: 'ubuntu:xenial'   # ubuntu/16.04
+        #   - pkg: 'krillup'
+        #     mode: 'upgrade-from-published'
+        #     image: 'ubuntu:bionic'   # ubuntu/18.04
+        #   - pkg: 'krillup'
+        #     mode: 'upgrade-from-published'
+        #     image: 'ubuntu:focal'    # ubuntu/20.04
+        #   - pkg: 'krillup'
+        #     mode: 'upgrade-from-published'
+        #     image: 'ubuntu:jammy'    # ubuntu/22.04
+        #   - pkg: 'krillup'
+        #     mode: 'upgrade-from-published'
+        #     image: 'debian:stretch'  # debian/9
+        #   - pkg: 'krillup'
+        #     mode: 'upgrade-from-published'
+        #     image: 'debian:buster'   # debian/10
+        #   - pkg: 'krillup'
+        #     mode: 'upgrade-from-published'
+        #     image: 'debian:bullseye' # debian/11
+        #   - pkg: 'krillup'
+        #     mode: 'upgrade-from-published'
+        #     image: 'centos:7'
+        #   - pkg: 'krillup'
+        #     mode: 'upgrade-from-published'
+        #     image: 'centos:8'
     steps:
     # Set some environment variables that will be available to "run" steps below in this job, and some output variables
     # that will be available in GH Action step definitions below.
